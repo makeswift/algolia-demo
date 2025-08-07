@@ -2,8 +2,12 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { draftMode } from 'next/headers'
 
+import { MakeswiftComponent } from '@makeswift/runtime/next'
 import { DraftModeScript } from '@makeswift/runtime/next/server'
 
+import { Navigation } from '@/components/Navigation/client'
+import { NAVIGATION_COMPONENT_TYPE } from '@/components/Navigation/register'
+import { Component } from '@/lib/makeswift/component'
 import '@/lib/makeswift/components'
 import { MakeswiftProvider } from '@/lib/makeswift/provider'
 
@@ -29,6 +33,7 @@ export default async function RootLayout({
       </head>
       <body className={inter.className}>
         <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+          <Component type={NAVIGATION_COMPONENT_TYPE} label="Navigation" snapshotId="navigation" />
           {children}
         </MakeswiftProvider>
       </body>
