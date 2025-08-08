@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Configure, useHits, useInstantSearch, useSearchBox } from 'react-instantsearch'
@@ -20,7 +21,6 @@ interface AlgoliaSearchProps {
   paginationLimit?: number
 }
 
-// Use the actual Hit type from react-instantsearch with our expected properties
 type SearchHit = {
   objectID: string
   title: string
@@ -96,7 +96,6 @@ const SearchInput = React.memo(
       }
     }, [show])
 
-    // Debounced search function - even shorter delay for better responsiveness
     const debouncedRefine = useMemo(
       () =>
         debounce((query: string) => {
@@ -105,7 +104,6 @@ const SearchInput = React.memo(
       [refine]
     )
 
-    // Cleanup debounce on unmount
     useEffect(() => {
       return () => {
         debouncedRefine.cancel()
@@ -279,12 +277,11 @@ const Hits = React.memo(
     const { query } = useSearchBox()
     const { status, error } = useInstantSearch({ catchError: true })
 
-    // State to track pagination
+    // Pagination
     const [shown, setShown] = useState(maxResults)
     const router = useRouter()
-    const olRef = useRef<HTMLOListElement>(null)
+    const olRef = useRef<HTMLDivElement>(null)
 
-    // Close the hits when clicking outside
     useClickOutside(
       olRef,
       useCallback(() => setShowHits(false), [setShowHits])
@@ -317,78 +314,76 @@ const Hits = React.memo(
       setShown(maxResults)
     }, [query, maxResults])
 
-    // Show loading spinner when searching
     if (status === 'loading' || status === 'stalled') {
       return <Spinner />
     }
 
-    // Show error state if there's an actual error
     if (error) {
       return <ErrorState message="Unable to load search results. Please try again later." />
     }
 
-    // If no results object yet, show spinner
     if (!results) {
       return <Spinner />
     }
 
     return (
-      <ol
-        id="search-results"
-        role="listbox"
-        aria-label="Search results"
-        className="absolute top-full z-50 mt-2 flex max-h-[400px] w-full flex-col overflow-auto rounded-xl bg-white shadow-xl ring-1 ring-gray-200"
+      <div
+        className="absolute top-full z-50 mt-2 w-full rounded-xl bg-white shadow-xl ring-1 ring-gray-200"
         ref={olRef}
         tabIndex={-1}
       >
-        {hitsToShow.length === 0 ? (
-          <div className="p-4 text-center text-gray-600" role="status">
-            {query ? `We couldn't find anything for "${query}"` : 'Start typing to search...'}
-          </div>
-        ) : (
-          hitsToShow.map((hit, index) => (
-            <li
-              key={hit.objectID}
-              id={`hit-${hit.objectID}`}
-              role="option"
-              aria-selected={index === selectedIndex}
-              onMouseDown={() => handleHitClick(hit)}
-              onMouseEnter={() => setSelectedIndex(index)}
-              onMouseLeave={() => setSelectedIndex(-1)}
-              className={clsx(
-                'cursor-pointer border-b border-gray-100 p-4 text-gray-600 duration-200 last:border-b-0',
-                index === selectedIndex
-                  ? 'bg-blue-50 text-gray-900'
-                  : 'hover:bg-gray-50 hover:text-gray-900'
-              )}
-            >
-              <div className="flex items-start gap-3">
-                {hit.image && (
-                  <img
-                    src={hit.image}
-                    alt=""
-                    className="h-12 w-12 rounded object-cover"
-                    loading="lazy"
-                  />
+        <ol
+          id="search-results"
+          role="listbox"
+          aria-label="Search results"
+          className="flex w-full flex-col"
+        >
+          {hitsToShow.length === 0 ? (
+            <div className="p-4 text-center text-gray-600" role="status">
+              {query ? `We couldn't find anything for "${query}"` : 'Start typing to search...'}
+            </div>
+          ) : (
+            hitsToShow.map((hit, index) => (
+              <li
+                key={hit.objectID}
+                id={`hit-${hit.objectID}`}
+                role="option"
+                aria-selected={index === selectedIndex}
+                onMouseDown={() => handleHitClick(hit)}
+                onMouseEnter={() => setSelectedIndex(index)}
+                onMouseLeave={() => setSelectedIndex(-1)}
+                className={clsx(
+                  'cursor-pointer border-b border-gray-100 p-4 text-gray-600 duration-200 last:border-b-0',
+                  index === selectedIndex
+                    ? 'bg-blue-50 text-gray-900'
+                    : 'hover:bg-gray-50 hover:text-gray-900'
                 )}
-                <div className="flex flex-1 flex-col gap-1">
-                  <h3 className="line-clamp-1 font-medium text-blue-600">{hit.title}</h3>
-                  <p className="line-clamp-2 text-sm text-gray-600">{hit.description}</p>
-                  {hit.url && <p className="line-clamp-1 text-xs text-gray-400">{hit.url}</p>}
+              >
+                <div className="flex items-start gap-3">
+                  {hit.image && (
+                    <Image src={hit.image} alt="" loading="lazy" width={48} height={48} />
+                  )}
+                  <div className="flex flex-1 flex-col gap-1">
+                    <h3 className="line-clamp-1 font-medium text-blue-600">{hit.title}</h3>
+                    <p className="line-clamp-2 text-sm text-gray-600">{hit.description}</p>
+                    {hit.url && <p className="line-clamp-1 text-xs text-gray-400">{hit.url}</p>}
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))
-        )}
+              </li>
+            ))
+          )}
+        </ol>
 
         {shown < (results?.hits?.length || 0) && (
-          <button
-            onClick={handleShowMore}
-            className="my-2 self-center rounded-md px-4 py-2 text-sm text-blue-600 transition-colors hover:bg-blue-50"
-            type="button"
-          >
-            Show {Math.min(paginationLimit, (results?.hits?.length || 0) - shown)} more results
-          </button>
+          <div className="border-t border-gray-100 px-4 py-2">
+            <button
+              onClick={handleShowMore}
+              className="w-full rounded-md px-4 py-2 text-sm text-blue-600 transition-colors hover:bg-blue-50"
+              type="button"
+            >
+              Show {Math.min(paginationLimit, (results?.hits?.length || 0) - shown)} more results
+            </button>
+          </div>
         )}
 
         {hitsToShow.length > 0 && (
@@ -396,7 +391,7 @@ const Hits = React.memo(
             {results?.hits?.length || 0} result{(results?.hits?.length || 0) !== 1 ? 's' : ''} found
           </div>
         )}
-      </ol>
+      </div>
     )
   }
 )

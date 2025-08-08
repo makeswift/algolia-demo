@@ -13,6 +13,8 @@ interface Props {
   }>
   alignment?: 'left' | 'center' | 'right'
   orientation?: 'horizontal' | 'vertical'
+  searchMaxResults?: number
+  searchPaginationLimit?: number
 }
 
 export function Navigation({
@@ -20,6 +22,8 @@ export function Navigation({
   links = [],
   alignment = 'left',
   orientation = 'horizontal',
+  searchMaxResults = 2,
+  searchPaginationLimit = 2,
 }: Props) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
 
@@ -52,7 +56,7 @@ export function Navigation({
               <li key={i}>
                 <Link
                   href={item.link.href}
-                  className="relative text-sm font-medium text-gray-700 transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-blue-600 after:transition-all after:duration-300 hover:text-blue-600 hover:after:w-full md:text-base"
+                  className="relative text-sm font-medium text-gray-700 transition-all duration-300 hover:text-blue-600 md:text-base"
                 >
                   {item.label}
                 </Link>
@@ -134,7 +138,11 @@ export function Navigation({
                 <h2 className="mb-4 pr-8 text-center text-xl font-semibold text-gray-900 md:mb-6 md:text-2xl">
                   Search
                 </h2>
-                <AlgoliaSearch placeholder="What are you looking for?" />
+                <AlgoliaSearch
+                  placeholder="What are you looking for?"
+                  paginationLimit={searchPaginationLimit}
+                  maxResults={searchMaxResults}
+                />
               </div>
             </div>
           </div>

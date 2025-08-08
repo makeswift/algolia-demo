@@ -1,4 +1,4 @@
-import { Group, Link, List, Select, Style, TextInput } from '@makeswift/runtime/controls'
+import { Group, Link, List, Number, Select, Style, TextInput } from '@makeswift/runtime/controls'
 import { runtime } from 'lib/makeswift/runtime'
 
 import { Navigation } from './client'
@@ -36,6 +36,22 @@ const orientation = Select({
   defaultValue: 'horizontal',
 })
 
+const searchMaxResults = Number({
+  label: 'Search initial results',
+  defaultValue: 2,
+  min: 1,
+  max: 20,
+  step: 1,
+})
+
+const searchPaginationLimit = Number({
+  label: 'Search results per pagination',
+  defaultValue: 2,
+  min: 1,
+  max: 10,
+  step: 1,
+})
+
 runtime.registerComponent(Navigation, {
   type: NAVIGATION_COMPONENT_TYPE,
   label: 'Navigation',
@@ -46,5 +62,7 @@ runtime.registerComponent(Navigation, {
     links,
     alignment,
     orientation,
+    searchMaxResults,
+    searchPaginationLimit,
   },
 })
