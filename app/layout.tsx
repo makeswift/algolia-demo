@@ -11,13 +11,14 @@ import { Component } from '@/lib/makeswift/component'
 import '@/lib/makeswift/components'
 import { MakeswiftProvider } from '@/lib/makeswift/provider'
 
+import { env } from '../env'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   other: {
-    'algolia-site-verification': 'E64C5BE6EB326C2E',
+    'algolia-site-verification': env.ALGOLIA_SITE_VERIFICATION ?? '',
   },
 }
 
