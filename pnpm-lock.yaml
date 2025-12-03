@@ -30,13 +30,13 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       next:
-        specifier: ^15.2.2
+        specifier: ^15.2.6
         version: 15.4.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react:
-        specifier: ^19.0.0
+        specifier: ^19.0.1
         version: 19.1.1
       react-dom:
-        specifier: ^19.0.0
+        specifier: ^19.0.1
         version: 19.1.1(react@19.1.1)
       react-instantsearch:
         specifier: ^7.16.2
@@ -2082,6 +2082,7 @@ packages:
   next@15.4.5:
     resolution: {integrity: sha512-nJ4v+IO9CPmbmcvsPebIoX3Q+S7f6Fu08/dEWu0Ttfa+wVwQRh9epcmsyCPjmL2b8MxC+CkBR97jgDhUUztI3g==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
